@@ -1,0 +1,4 @@
+interface:
+  display_name: "LLD Session Critique"
+  short_description: "Critique LLD notes into a compact matrix"
+  default_prompt: "Use $lld-session-critique to critique my LLD session note, compress strengths and weaknesses into a matrix, and append it to the markdown file."
