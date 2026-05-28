@@ -22,9 +22,7 @@ In other words:
 
 Let a system be:
 
-```text
-S = (E, Sigma, X, I, delta, Phi, Omega, D)
-```
+$$ S = (E, \Sigma, X, I, \delta, \Phi, \Omega, D) $$
 
 Where:
 
@@ -38,6 +36,20 @@ Where:
 - `D` = dependency graph over components
 
 This gives the semantic backbone of an LLD problem.
+
+## 2.1 Notation Conventions
+
+To keep the formulas readable:
+
+- `×` means product / tuple input
+- `→` means total map or function
+- `⇀` means partial function
+- `⊆` means subset
+- `∀` means "for all"
+- `∈` means "is an element of"
+- `Result[A, B]` means either success value `A` or failure value `B`
+
+When exact mathematical precision is less important than readability, the notation stays slightly informal on purpose.
 
 ---
 
@@ -96,9 +108,7 @@ This is why data structure choice is downstream of semantics and operations.
 
 Each:
 
-```text
-ik : Sigma x X -> {true, false}
-```
+$$ i_k : \Sigma \times X \to \{\mathrm{true}, \mathrm{false}\} $$
 
 Examples:
 
@@ -109,18 +119,13 @@ Examples:
 
 Correctness requires:
 
-```text
-For every reachable state s with representation x:
-for all ik in I, ik(s, x) = true
-```
+$$ \forall \, (s,x) \in \mathrm{Reachable}(S), \; \forall i_k \in I,\; i_k(s,x) = \mathrm{true} $$
 
 ## 3.5 Transition Relation
 
 `delta` defines how the system evolves.
 
-```text
-delta : Sigma x X x E -> Sigma x X
-```
+$$ \delta : \Sigma \times X \times E \to \Sigma \times X $$
 
 For legal operations, `delta` returns the next abstract state and representation.
 
@@ -195,19 +200,13 @@ The system is correct if:
 
 ## 4.1 Initial correctness
 
-```text
-For all ik in I, ik(s0, x0) = true
-```
+$$ \forall i_k \in I,\; i_k(s_0, x_0) = \mathrm{true} $$
 
 ## 4.2 Transition preservation
 
 For every legal event `e`:
 
-```text
-if ik(s, x) = true for all ik in I
-and delta(s, x, e) = (s', x')
-then ik(s', x') = true for all ik in I
-```
+$$ \Big( \forall i_k \in I,\; i_k(s,x) = \mathrm{true} \Big) \land \delta(s,x,e) = (s',x') \implies \Big( \forall i_k \in I,\; i_k(s',x') = \mathrm{true} \Big) $$
 
 This is the core proof obligation:
 
@@ -231,9 +230,7 @@ It is also about **who has authority to trigger them**.
 
 Define an ownership mapping:
 
-```text
-A : Mutation or invariant -> Component
-```
+$$ A : (\mathrm{mutation}\ \mathrm{or}\ \mathrm{invariant}) \to \mathrm{component} $$
 
 Examples:
 
@@ -294,9 +291,7 @@ Formally, extensibility is about whether a new requirement can be absorbed by ad
 
 Let a requirement change be:
 
-```text
-r : (E, Sigma, X, I, delta, Phi, Omega, D) -> (E', Sigma', X', I', delta', Phi', Omega', D')
-```
+$$ r : (E, \Sigma, X, I, \delta, \Phi, \Omega, D) \to (E', \Sigma', X', I', \delta', \Phi', \Omega', D') $$
 
 A design is more extensible when `r` has low propagation cost.
 
@@ -304,15 +299,11 @@ A design is more extensible when `r` has low propagation cost.
 
 Define:
 
-```text
-P(r) = the set of existing components or functions that must change under r
-```
+$$ P(r) = \{ c \mid c \text{ is an existing component or function changed by } r \} $$
 
 Then a practical extensibility objective is:
 
-```text
-minimize |P(r)|
-```
+$$ minimize |P(r)| $$
 
 for common foreseeable changes.
 
@@ -339,10 +330,7 @@ Other parts are natural variation points:
 
 A good LLD isolates likely change axes so that:
 
-```text
-delta_core stays stable
-while Phi_var, policy modules, or bounded subgraphs of D vary
-```
+$$ \delta_{\mathrm{core}} \text{ stays stable while } \Phi_{\mathrm{var}}, \text{ policy modules, or bounded subgraphs of } D \text{ vary} $$
 
 In practice:
 
@@ -378,25 +366,15 @@ The deeper formal question is:
 
 Let:
 
-```text
-S = (E, Sigma, X, I, delta, Phi, Omega, D)
-S' = (E', Sigma', X', I', delta', Phi', Omega', D')
-```
+$$ S = (E, \Sigma, X, I, \delta, \Phi, \Omega, D), \quad S' = (E', \Sigma', X', I', \delta', \Phi', \Omega', D') $$
 
 A requirement change is *shape-preserving* when there exist embeddings:
 
-```text
-fE : E -> E'
-fSigma : Sigma -> Sigma'
-fX : X -> X'
-fD : D -> D'
-```
+$$ f_E : E \to E', \quad f_{\Sigma} : \Sigma \to \Sigma', \quad f_X : X \to X', \quad f_D : D \to D' $$
 
 such that the old model still commutes inside the new one:
 
-```text
-fSigma(delta(s, x, e)) = delta'(fSigma(s), fX(x), fE(e))
-```
+$$ f_{\Sigma}(\delta(s,x,e)) = \delta'(f_{\Sigma}(s), f_X(x), f_E(e)) $$
 
 for all previously legal `e` in the unchanged portion of the system.
 
@@ -421,15 +399,11 @@ Requirement changes are not all equally invasive.
 
 Define a preorder over changes:
 
-```text
-r1 <= r2  iff  every component changed by r1 is also changed by r2
-```
+$$ r_1 \le r_2 \iff \text{every component changed by } r_1 \text{ is also changed by } r_2 $$
 
 or more abstractly:
 
-```text
-r1 <= r2  iff  P(r1) subseteq P(r2)
-```
+$$ r_1 \le r_2 \iff P(r_1) \subseteq P(r_2) $$
 
 This induces a rough ordering of extensibility cost.
 
@@ -453,18 +427,13 @@ These have different blast radii.
 
 For sum-like variation:
 
-```text
-VehicleType = Bike | Car | Truck
-```
+$$ \mathrm{VehicleType} = \mathrm{Bike} \mid \mathrm{Car} \mid \mathrm{Truck} $$
 
 naive branching often forces edits everywhere the sum is inspected.
 
 For policy-like variation:
 
-```text
-FeePolicy : Session -> Money
-AllocationPolicy : LotState x Vehicle -> Spot option
-```
+$$ \mathrm{FeePolicy} : \mathrm{Session} \to \mathrm{Money}, \quad \mathrm{AllocationPolicy} : \mathrm{LotState} \times \mathrm{Vehicle} \to \mathrm{Spot}\ \mathrm{option} $$
 
 the change is localized by moving variability into a typed boundary.
 
@@ -478,15 +447,11 @@ Suppose `I` is the original invariant set and `I'` is the new one after change.
 
 A well-structured extension often satisfies:
 
-```text
-I subseteq I'
-```
+$$ I \subseteq I' $$
 
 or at least:
 
-```text
-all old reachable states that remain valid still satisfy the lifted form of I
-```
+$$ all old reachable states that remain valid still satisfy the lifted form of I $$
 
 This matters because some changes add constraints while others weaken them.
 
@@ -504,9 +469,7 @@ Let `R` be the requirement set.
 
 Then a design problem is better written as:
 
-```text
-Design : R -> S
-```
+$$ \mathrm{Design} : R \to S $$
 
 where `S` is the formal system model.
 
@@ -514,15 +477,11 @@ where `S` is the formal system model.
 
 A requirement update:
 
-```text
-rho : R -> R'
-```
+$$ \rho : R \to R' $$
 
 induces a model transformation:
 
-```text
-T(rho) : S -> S'
-```
+$$ T(\rho) : S \to S' $$
 
 The quality of the original design can be partly judged by the properties of `T(rho)` for foreseeable `rho`.
 
@@ -559,9 +518,7 @@ Changes to `Phi` or bounded parts of `Omega` are often cheaper than changes to `
 
 Let:
 
-```text
-V : requirement dimension -> expected change frequency
-```
+$$ V : \mathrm{requirement\_dimension} \to \mathrm{expected\_change\_frequency} $$
 
 Then design quality depends partly on aligning abstraction boundaries to high-volatility dimensions.
 
@@ -583,9 +540,7 @@ They are a representation choice constrained by state shape and operation load.
 
 Let:
 
-```text
-Rep : X -> Sigma
-```
+$$ \mathrm{Rep} : X \to \Sigma $$
 
 map concrete representation to abstract state.
 
@@ -593,11 +548,7 @@ Correctness of a data structure choice requires that operations over `X` faithfu
 
 That is:
 
-```text
-Rep(x) = s
-and updateX(x, e) = x'
-implies Rep(x') = delta(s, x, e).state
-```
+$$ \mathrm{Rep}(x) = s \land \mathrm{update}_X(x,e) = x' \implies \mathrm{Rep}(x') = \mathrm{abstract\_state}(\delta(s,x,e)) $$
 
 up to the intended abstraction boundary.
 
@@ -605,21 +556,15 @@ up to the intended abstraction boundary.
 
 Let the workload be:
 
-```text
-W : E -> frequency or weight
-```
+$$ W : E \to \mathrm{frequency\_or\_weight} $$
 
 and let:
 
-```text
-C_X(e) = cost of realizing event e under representation X
-```
+$$ C_X(e) = \mathrm{cost\ of\ realizing\ event}\ e\ \mathrm{under\ representation}\ X $$
 
 Then a representation choice is partly an optimization problem:
 
-```text
-choose X to minimize sum over e in E of W(e) * C_X(e)
-```
+$$ \text{choose } X \text{ to minimize } \sum_{e \in E} W(e)\cdot C_X(e) $$
 
 subject to:
 
@@ -642,9 +587,7 @@ Example:
 
 Each derived structure introduces a consistency obligation:
 
-```text
-index(x) must agree with canonical(x)
-```
+$$ \mathrm{index}(x) \text{ must agree with } \mathrm{canonical}(x) $$
 
 So every index is not just a performance decision.
 It is also a new invariant.
@@ -672,23 +615,17 @@ Some LLD problems implicitly require concurrent reasoning.
 
 Let:
 
-```text
-delta_e : Sigma x X -> Sigma x X
-```
+$$ \delta_e : \Sigma \times X \to \Sigma \times X $$
 
 be the transition induced by event `e`.
 
 Under concurrency, the system executes interleavings of transitions:
 
-```text
-delta_e2(delta_e1(s, x))
-```
+$$ delta_e2(delta_e1(s, x)) $$
 
 and
 
-```text
-delta_e1(delta_e2(s, x))
-```
+$$ delta_e1(delta_e2(s, x)) $$
 
 may differ.
 
@@ -696,9 +633,7 @@ may differ.
 
 Two operations commute if:
 
-```text
-delta_e2(delta_e1(s, x)) = delta_e1(delta_e2(s, x))
-```
+$$ delta_e2(delta_e1(s, x)) = delta_e1(delta_e2(s, x)) $$
 
 for all relevant states.
 
@@ -714,9 +649,7 @@ Examples:
 
 Concurrency design requires choosing an atomicity scope:
 
-```text
-Atomic(op) = the smallest state slice that must change as one unit
-```
+$$ \mathrm{Atomic}(op) = \text{the smallest state slice that must change as one unit} $$
 
 A good atomicity boundary aligns with invariant boundaries.
 
@@ -765,9 +698,7 @@ The right choice depends on:
 
 If multiple locks or resources are acquired, define an order:
 
-```text
-L1 < L2 < ... < Ln
-```
+$$ L1 < L2 < ... < Ln $$
 
 and require acquisition to follow that order.
 
@@ -786,17 +717,13 @@ Formally, a flow is a path through the transition system.
 
 A happy path is a sequence:
 
-```text
-pi_h = e1, e2, ..., en
-```
+$$ \pi_h = [e_1, e_2, \ldots, e_n] $$
 
 such that every transition is legal and every post-state preserves invariants.
 
 Execution means:
 
-```text
-(s0, x0) -> (s1, x1) -> ... -> (sn, xn)
-```
+$$ (s_0, x_0) \to (s_1, x_1) \to \cdots \to (s_n, x_n) $$
 
 with no rejection and expected outputs in `Omega`.
 
@@ -811,15 +738,11 @@ Happy paths validate:
 
 A failure path is a sequence where some event hits guard failure, dependency failure, invariant risk, or explicit error state:
 
-```text
-pi_f = e1, e2, ..., ek
-```
+$$ \pi_f = [e_1, e_2, \ldots, e_k] $$
 
 with:
 
-```text
-delta_f(sk, xk, ek+1) = failure
-```
+$$ \delta_f(s_k, x_k, e_{k+1}) = \mathrm{failure} $$
 
 or transition into a modeled compensating state.
 
@@ -850,9 +773,7 @@ They are the formally meaningful ways the system can reject, degrade, or violate
 
 Extend transition semantics to:
 
-```text
-delta_f : Sigma x X x E -> Result[(Sigma x X), F]
-```
+$$ \delta_f : \Sigma \times X \times E \to \mathrm{Result}[(\Sigma \times X), F] $$
 
 Where `F` is a set of explicit failure outcomes.
 
@@ -918,7 +839,157 @@ That is the minimal formal failure pass for an LLD design.
 
 ---
 
-# 13. Classes as a Representation Layer
+# 13. Interface Formalization
+
+Interfaces are not just language syntax.
+Formally, they are boundary contracts that expose an admissible observation and command surface while hiding representation and internal dependency choices.
+
+An interface defines:
+
+1. what operations are visible
+2. what inputs and outputs are allowed
+3. what semantic guarantees callers may rely on
+4. what implementation details remain hidden
+
+## 13.1 Interface as boundary projection
+
+Let a component have internal model:
+
+$$ C = (\Sigma_c, X_c, I_c, \delta_c, \Omega_c) $$
+
+An interface is a projection:
+
+$$ \pi_c : C \to I_c $$
+
+where `Ic` exposes only:
+
+- a set of callable operations
+- visible result types
+- selected guarantees
+
+and deliberately omits:
+
+- hidden state layout
+- internal helper transitions
+- private indexes
+- internal dependency wiring
+
+So an interface is a controlled loss of information.
+
+That is good.
+It reduces coupling by preventing callers from depending on accidental structure.
+
+## 13.2 Interface as a behavioral contract
+
+A useful interface is not just a method list.
+It is a contract over traces.
+
+For each exposed operation `op`, specify:
+
+$$ op : \mathrm{Input} \to \mathrm{Result}[\mathrm{Output}, \mathrm{Error}] $$
+
+together with:
+
+1. preconditions
+2. postconditions
+3. failure cases
+4. side-effect guarantees
+5. concurrency guarantees if relevant
+
+So the real semantic interface is closer to:
+
+$$ \mathrm{Contract}(op) = (\mathrm{Pre}, \mathrm{Post}, \mathrm{Fail}, \mathrm{Effects}, \mathrm{ConcurrencySemantics}) $$
+
+This is why two interfaces with identical method signatures may still be radically different designs.
+
+## 13.3 Interface refinement
+
+Suppose two interfaces `I1` and `I2` represent versions of the same boundary.
+
+`I2` refines `I1` if:
+
+1. every valid `I1` client remains valid against `I2`
+2. `I2` preserves the guarantees of `I1`
+3. `I2` may strengthen internal structure without exposing new accidental coupling
+
+This is the interface-level version of conservative extension.
+
+It matters because good LLD often depends on being able to swap implementations or extend behavior without breaking callers.
+
+## 13.4 Dependency inversion as interface factoring
+
+If component `A` depends on component `B` only through an interface `IB`, then the dependency edge is not really:
+
+$$ A \to B $$
+
+but rather:
+
+$$ A \to I_B \leftarrow B $$
+
+This matters formally because it changes the dependency graph.
+
+The caller depends on:
+
+- the contract
+- not the implementation node
+
+This weakens coupling and localizes change.
+
+So interface extraction is not mere style.
+It is graph factoring that can reduce propagation of requirement change.
+
+## 13.5 Interface width and leakiness
+
+Define the width of an interface roughly as the amount of behavior and structure it exposes.
+
+Very wide interfaces are risky because:
+
+1. more callers can couple to more semantics
+2. substitution becomes harder
+3. change propagation surface increases
+
+Very narrow interfaces are risky when:
+
+1. they hide required invariants too aggressively
+2. orchestration code must reconstruct missing semantics externally
+
+So interface design is an optimization problem:
+
+> expose enough to preserve correctness and usability, but not enough to leak representation or unnecessary policy
+
+## 13.6 Interface placement heuristic
+
+Introduce an interface when at least one of these is true:
+
+1. multiple implementations are plausible
+2. the dependency points toward a volatile policy
+3. the caller should not observe representation details
+4. the boundary is important for testing, substitution, or isolation
+
+Do not introduce an interface just because a language allows one.
+
+An interface with only one implementation can still be useful if it isolates a high-volatility or side-effecting boundary.
+An interface around a perfectly stable, purely internal entity often adds little.
+
+## 13.7 Interfaces and invariants
+
+Interfaces should align with invariant ownership.
+
+If a component owns an invariant, its interface should expose operations that preserve that invariant as a unit.
+
+Bad sign:
+
+- callers must orchestrate several low-level calls in the right order to avoid breaking the component's invariant
+
+Better sign:
+
+- the interface exposes one operation that preserves the invariant internally
+
+So interface granularity should track mutation closure, not just object vocabulary.
+
+---
+
+# 14. Classes as a Representation Layer
 
 Classes are not the first-class object of the formal model.
 
@@ -937,7 +1008,7 @@ So class design is best understood as:
 
 ---
 
-# 14. Why the Interview Funnel Exists
+# 15. Why the Interview Funnel Exists
 
 The usual interview steps reconstruct this model in a practical order:
 
@@ -955,18 +1026,15 @@ It is not arbitrary ceremony.
 
 ---
 
-# 15. Minimal Formal Compression
+# 16. Minimal Formal Compression
 
 If you want the shortest possible statement:
 
-```text
-LLD = choose state, constrain it with invariants, define legal transitions,
-localize mutation authority, and embed the result in a low-coupling dependency graph.
-```
+$$ \mathrm{LLD} = \text{choose state, constrain it with invariants, define legal transitions, localize mutation authority, and embed the result in a low-coupling dependency graph} $$
 
 ---
 
-# 16. What This Model Does Not Cover Well
+# 17. What This Model Does Not Cover Well
 
 This formalization is strong for bounded local design.
 
