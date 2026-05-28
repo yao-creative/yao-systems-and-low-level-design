@@ -1,0 +1,51 @@
+<svg width="960" height="560" viewBox="0 0 960 560" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto" markerUnits="strokeWidth">
+      <path d="M1 1L11 7L1 13" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      .panel { fill: #0F172A; }
+      .group { fill: #111827; stroke: #93C5FD; stroke-width: 2.5; rx: 22; ry: 22; }
+      .node { fill: #1E293B; stroke: #FFFFFF; stroke-width: 2.5; rx: 18; ry: 18; }
+      .note { fill: #172554; stroke: #BFDBFE; stroke-width: 2; rx: 18; ry: 18; }
+      .heading { fill: #BFDBFE; font-family: Arial, sans-serif; font-size: 22px; font-weight: 700; }
+      .label { fill: #FFFFFF; font-family: Arial, sans-serif; font-size: 22px; font-weight: 700; }
+      .body { fill: #DBEAFE; font-family: Arial, sans-serif; font-size: 19px; }
+      .arrow { stroke: #FFFFFF; stroke-width: 4; fill: none; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect class="panel" width="960" height="560" rx="28"/>
+
+  <rect class="group" x="70" y="90" width="250" height="180" rx="22"/>
+  <text class="heading" x="95" y="125">Aggregate: Order</text>
+  <rect class="node" x="95" y="145" width="200" height="52" rx="16"/>
+  <text class="label" x="195" y="178" text-anchor="middle">Order Entity</text>
+  <rect class="node" x="95" y="205" width="200" height="52" rx="16"/>
+  <text class="label" x="195" y="238" text-anchor="middle">Order Items</text>
+
+  <rect class="group" x="370" y="90" width="220" height="140" rx="22"/>
+  <text class="heading" x="395" y="125">Aggregate: Payment</text>
+  <rect class="node" x="395" y="155" width="170" height="52" rx="16"/>
+  <text class="label" x="480" y="188" text-anchor="middle">Payment Entity</text>
+
+  <rect class="group" x="650" y="90" width="220" height="140" rx="22"/>
+  <text class="heading" x="675" y="125">Aggregate: User</text>
+  <rect class="node" x="675" y="155" width="170" height="52" rx="16"/>
+  <text class="label" x="760" y="188" text-anchor="middle">User Entity</text>
+
+  <rect class="node" x="350" y="360" width="260" height="76" rx="18"/>
+  <text class="label" x="480" y="406" text-anchor="middle">Domain Service</text>
+
+  <rect class="note" x="600" y="320" width="290" height="140" rx="18"/>
+  <text class="label" x="625" y="358">Key idea:</text>
+  <text class="body" x="625" y="388">- Each aggregate enforces</text>
+  <text class="body" x="625" y="415">  its own invariants</text>
+  <text class="body" x="625" y="442">- Cross-aggregate changes</text>
+  <text class="body" x="625" y="469">  go through services</text>
+
+  <path class="arrow" d="M195 197C195 199 195 202 195 205"/>
+  <path class="arrow" d="M430 360C360 300 270 250 205 225"/>
+  <path class="arrow" d="M480 360C480 308 480 258 480 230"/>
+  <path class="arrow" d="M530 360C585 302 664 244 730 225"/>
+</svg>

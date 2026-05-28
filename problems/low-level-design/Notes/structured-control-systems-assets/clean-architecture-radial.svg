@@ -1,0 +1,42 @@
+<svg width="960" height="520" viewBox="0 0 960 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto" markerUnits="strokeWidth">
+      <path d="M1 1L11 7L1 13" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      .panel { fill: #0F172A; }
+      .node { fill: #1E293B; stroke: #FFFFFF; stroke-width: 2.5; rx: 18; ry: 18; }
+      .note { fill: #172554; stroke: #BFDBFE; stroke-width: 2; rx: 18; ry: 18; }
+      .label { fill: #FFFFFF; font-family: Arial, sans-serif; font-size: 22px; font-weight: 700; }
+      .body { fill: #DBEAFE; font-family: Arial, sans-serif; font-size: 19px; }
+      .arrow { stroke: #FFFFFF; stroke-width: 4; fill: none; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect class="panel" width="960" height="520" rx="28"/>
+
+  <rect class="node" x="80" y="210" width="240" height="76" rx="18"/>
+  <text class="label" x="200" y="256" text-anchor="middle">UI / Controllers /</text>
+  <text class="label" x="200" y="284" text-anchor="middle">Presenters</text>
+
+  <rect class="node" x="360" y="210" width="250" height="76" rx="18"/>
+  <text class="label" x="485" y="245" text-anchor="middle">Use Cases /</text>
+  <text class="label" x="485" y="273" text-anchor="middle">Application Layer</text>
+
+  <rect class="node" x="650" y="120" width="220" height="76" rx="18"/>
+  <text class="label" x="760" y="166" text-anchor="middle">Entities / Domain Core</text>
+
+  <rect class="node" x="650" y="300" width="220" height="92" rx="18"/>
+  <text class="label" x="760" y="338" text-anchor="middle">Infrastructure:</text>
+  <text class="label" x="760" y="366" text-anchor="middle">DB / APIs / Frameworks</text>
+
+  <rect class="note" x="70" y="55" width="360" height="110" rx="18"/>
+  <text class="label" x="100" y="96">Radial rule:</text>
+  <text class="body" x="100" y="128">- Dependencies always point inward</text>
+  <text class="body" x="100" y="155">- Domain is independent of frameworks</text>
+
+  <path class="arrow" d="M320 248C332 248 345 248 360 248"/>
+  <path class="arrow" d="M610 225C640 210 655 190 668 173"/>
+  <path class="arrow" d="M610 270C634 297 650 323 668 341"/>
+  <path class="arrow" d="M650 350C595 360 550 335 512 286"/>
+</svg>

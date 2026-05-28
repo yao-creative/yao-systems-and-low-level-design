@@ -1,0 +1,44 @@
+<svg width="960" height="520" viewBox="0 0 960 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto" markerUnits="strokeWidth">
+      <path d="M1 1L11 7L1 13" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      .panel { fill: #0F172A; }
+      .node { fill: #1E293B; stroke: #FFFFFF; stroke-width: 2.5; rx: 18; ry: 18; }
+      .note { fill: #172554; stroke: #BFDBFE; stroke-width: 2; rx: 18; ry: 18; }
+      .label { fill: #FFFFFF; font-family: Arial, sans-serif; font-size: 22px; font-weight: 700; }
+      .body { fill: #DBEAFE; font-family: Arial, sans-serif; font-size: 19px; }
+      .arrow { stroke: #FFFFFF; stroke-width: 4; fill: none; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect class="panel" width="960" height="520" rx="28"/>
+
+  <rect class="node" x="80" y="90" width="250" height="76" rx="18"/>
+  <text class="label" x="205" y="136" text-anchor="middle">User / External Actor</text>
+
+  <rect class="node" x="355" y="90" width="180" height="76" rx="18"/>
+  <text class="label" x="445" y="136" text-anchor="middle">Controller</text>
+
+  <rect class="node" x="300" y="250" width="170" height="76" rx="18"/>
+  <text class="label" x="385" y="296" text-anchor="middle">Model</text>
+
+  <rect class="node" x="595" y="250" width="160" height="76" rx="18"/>
+  <text class="label" x="675" y="296" text-anchor="middle">View</text>
+
+  <rect class="note" x="560" y="65" width="320" height="150" rx="18"/>
+  <text class="label" x="590" y="105">Weak separation:</text>
+  <text class="body" x="590" y="138">- Control, state, and</text>
+  <text class="body" x="590" y="165">  representation overlap</text>
+  <text class="body" x="590" y="192">- Business logic often leaks</text>
+  <text class="body" x="590" y="219">  into Model or Controller</text>
+
+  <path class="arrow" d="M330 128C338 128 345 128 355 128"/>
+  <path class="arrow" d="M405 166C390 198 380 220 380 250"/>
+  <path class="arrow" d="M330 285C230 285 175 240 175 166"/>
+  <path class="arrow" d="M478 128C545 128 605 170 645 250"/>
+  <path class="arrow" d="M675 326C675 384 604 420 330 420C188 420 140 330 140 166"/>
+  <path class="arrow" d="M470 288C515 278 555 274 595 280"/>
+  <path class="arrow" d="M595 304C552 317 513 321 470 314"/>
+</svg>

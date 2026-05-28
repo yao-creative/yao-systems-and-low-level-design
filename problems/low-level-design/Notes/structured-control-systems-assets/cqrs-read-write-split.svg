@@ -1,0 +1,56 @@
+<svg width="980" height="600" viewBox="0 0 980 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto" markerUnits="strokeWidth">
+      <path d="M1 1L11 7L1 13" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      .panel { fill: #0F172A; }
+      .group { fill: #111827; stroke: #93C5FD; stroke-width: 2.5; rx: 22; ry: 22; }
+      .node { fill: #1E293B; stroke: #FFFFFF; stroke-width: 2.5; rx: 18; ry: 18; }
+      .note { fill: #172554; stroke: #BFDBFE; stroke-width: 2; rx: 18; ry: 18; }
+      .heading { fill: #BFDBFE; font-family: Arial, sans-serif; font-size: 22px; font-weight: 700; }
+      .label { fill: #FFFFFF; font-family: Arial, sans-serif; font-size: 22px; font-weight: 700; }
+      .body { fill: #DBEAFE; font-family: Arial, sans-serif; font-size: 19px; }
+      .arrow { stroke: #FFFFFF; stroke-width: 4; fill: none; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect class="panel" width="980" height="600" rx="28"/>
+
+  <rect class="node" x="60" y="80" width="190" height="76" rx="18"/>
+  <text class="label" x="155" y="126" text-anchor="middle">Command Side</text>
+
+  <rect class="node" x="730" y="80" width="190" height="76" rx="18"/>
+  <text class="label" x="825" y="126" text-anchor="middle">Query Side</text>
+
+  <rect class="group" x="110" y="190" width="300" height="240" rx="22"/>
+  <text class="heading" x="140" y="225">Write Model</text>
+  <rect class="node" x="150" y="250" width="220" height="60" rx="16"/>
+  <text class="label" x="260" y="288" text-anchor="middle">Command Handlers</text>
+  <rect class="node" x="150" y="330" width="220" height="60" rx="16"/>
+  <text class="label" x="260" y="368" text-anchor="middle">Aggregates</text>
+
+  <rect class="group" x="570" y="190" width="300" height="240" rx="22"/>
+  <text class="heading" x="600" y="225">Read Model</text>
+  <rect class="node" x="610" y="250" width="220" height="60" rx="16"/>
+  <text class="label" x="720" y="288" text-anchor="middle">Projections / Views</text>
+  <rect class="node" x="610" y="330" width="220" height="60" rx="16"/>
+  <text class="label" x="720" y="368" text-anchor="middle">Query Handlers</text>
+
+  <rect class="node" x="380" y="470" width="220" height="76" rx="18"/>
+  <text class="label" x="490" y="516" text-anchor="middle">Events / State Changes</text>
+
+  <rect class="note" x="600" y="455" width="300" height="110" rx="18"/>
+  <text class="label" x="625" y="492">Key idea:</text>
+  <text class="body" x="625" y="520">- Write = correctness + invariants</text>
+  <text class="body" x="625" y="547">- Read = performance + shape</text>
+
+  <path class="arrow" d="M155 156C175 195 210 225 245 250"/>
+  <path class="arrow" d="M260 310C260 316 260 322 260 330"/>
+  <path class="arrow" d="M370 360C470 360 540 320 610 282"/>
+  <path class="arrow" d="M720 310C720 316 720 322 720 330"/>
+  <path class="arrow" d="M830 156C810 194 780 224 745 250"/>
+  <path class="arrow" d="M370 368C430 388 460 425 480 470"/>
+  <path class="arrow" d="M600 500C595 500 590 500 600 500"/>
+  <path class="arrow" d="M500 470C560 418 630 362 690 310"/>
+</svg>
