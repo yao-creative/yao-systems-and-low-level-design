@@ -120,7 +120,7 @@ LLD tries to separate:
 - policy
 - lifecycle
 
-## (2) Local reasoning beats global reasoning
+## (2) Local reasoning > global reasoning
 
 Good design lets you understand and modify one component without loading the full system into your head.
 
