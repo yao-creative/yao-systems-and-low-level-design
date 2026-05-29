@@ -708,7 +708,133 @@ if all acquisitions respect one global order, circular wait is prevented.
 
 ---
 
-# 11. Happy Path and Failure Path Formalization
+# 11. Idempotence Formalization
+
+Idempotence is the property that repeating the same externally intended operation does not keep changing the logical outcome after the first successful application.
+
+In LLD, this matters whenever retries, duplicate messages, refreshes, or at-least-once delivery are plausible.
+
+## 11.1 State-transition definition
+
+For an event `e`, idempotence means:
+
+$$ \delta(\delta(s,x,e), e) \equiv \delta(s,x,e) $$
+
+where `\equiv` means equivalence at the intended semantic boundary.
+
+This boundary matters.
+Two executions may differ in logs, timestamps, or trace ids while still being idempotent with respect to business state.
+
+So the stronger useful version is:
+
+$$ \mathrm{Obs}(\delta(\delta(s,x,e), e)) = \mathrm{Obs}(\delta(s,x,e)) $$
+
+for the observation model `Obs` that the API or domain actually promises.
+
+## 11.2 Idempotence is relative to event identity
+
+Not every repeated call should be idempotent automatically.
+Usually idempotence is defined relative to a stable operation identity such as:
+
+- request id
+- payment id
+- ticket id
+- command id
+
+So a more precise form is:
+
+$$ \delta((s,x), (e, id)) = \delta((s,x), (e, id), (e, id), \ldots) $$
+
+at the semantic boundary once the first successful application is recorded.
+
+Without a stable identity key, a duplicate request may be indistinguishable from a legitimate new request.
+
+## 11.3 Idempotence as decomposition of creation vs replay
+
+Many useful APIs are not naturally idempotent at the raw mutation level.
+They become idempotent by splitting logic into:
+
+1. first-application path
+2. duplicate-detection path
+3. replay-of-prior-result path
+
+Formally, introduce an idempotency index:
+
+$$ K : \mathrm{IdKey} \to \mathrm{RecordedOutcome} \cup \bot $$
+
+Then processing is closer to:
+
+$$ \delta_{\mathrm{idemp}}((s,x,K), (e,k)) = \begin{cases} (s',x',K[k \mapsto o]) & \text{if } K(k)=\bot \text{ and } \delta((s,x),e)=(s',x') \\ (s,x,K) & \text{if } K(k)\neq\bot \text{ and replay returns prior outcome} \end{cases} $$
+
+This shows an important design fact:
+
+> idempotence is often achieved by adding remembered operation history, not by making the core mutation itself mathematically self-idempotent
+
+## 11.4 Relation to invariants and failure
+
+Idempotence is not the same as invariant preservation.
+
+- invariant preservation says one execution keeps the state legal
+- idempotence says duplicate execution does not apply the business effect twice
+
+Examples:
+
+- charging a card twice may still leave the system in a legal state, but it is not idempotent
+- allocating the same parking spot twice may violate both invariants and idempotence
+
+So idempotence is a retry-safety property layered on top of correctness.
+
+## 11.5 Relation to concurrency
+
+Concurrent duplicate requests create a race:
+
+- both requests may observe "not yet processed"
+- both may try to apply the side effect
+
+So idempotence usually needs an atomicity condition over:
+
+1. duplicate detection
+2. effect application
+3. recording of the outcome
+
+A common correctness target is:
+
+$$ \mathrm{check\_key} \to \mathrm{apply\_effect} \to \mathrm{record\_outcome} $$
+
+executed atomically or under a serialization discipline strong enough to prevent double application.
+
+## 11.6 Interface-level idempotence
+
+Idempotence should be specified at the interface boundary, not inferred later.
+
+For an interface operation `op`, you want to know whether:
+
+$$ op(input, k);\, op(input, k) \equiv op(input, k) $$
+
+under the same idempotency key `k`.
+
+That means idempotence belongs in the contract alongside:
+
+- preconditions
+- postconditions
+- failure cases
+- concurrency guarantees
+
+## 11.7 Practical LLD questions
+
+For any operation that may be retried, ask:
+
+1. what is the identity key
+2. what state records prior completion
+3. what result is replayed on duplicate
+4. what atomic boundary prevents double-apply
+5. what happens if the effect succeeds but recording fails
+
+That is the minimal idempotence pass in an LLD design.
+
+---
+
+# 12. Happy Path and Failure Path Formalization
 
 Designs are usually explained as flows.
 Formally, a flow is a path through the transition system.
@@ -765,7 +891,7 @@ This is often enough to expose missing state, missing indexes, or broken ownersh
 
 ---
 
-# 12. Failure Mode Formalization
+# 13. Failure Mode Formalization
 
 Failure modes are not just bugs.
 
@@ -785,7 +911,7 @@ Examples:
 - missing dependency
 - payment failed
 
-## 12.1 Sources of failure
+## 13.1 Sources of failure
 
 A failure can arise from at least four places:
 
@@ -797,7 +923,7 @@ A failure can arise from at least four places:
 This is useful because many vague LLD answers talk only about the happy path.
 Formal reasoning improves when failure is attached to the layer that produced it.
 
-## 12.2 Failure-state discipline
+## 13.2 Failure-state discipline
 
 For any event `e`, one of these should hold:
 
@@ -813,7 +939,7 @@ But the system should not:
 
 So failure modeling is part of correctness, not an afterthought.
 
-## 12.3 Failure locality
+## 13.3 Failure locality
 
 Good LLD keeps failure handling near the boundary that can explain or recover from it.
 
@@ -825,7 +951,7 @@ Examples:
 
 This avoids a design where all failures collapse into one vague global error path.
 
-## 12.4 Failure mode checklist
+## 13.4 Failure mode checklist
 
 For any core operation, ask:
 
@@ -839,7 +965,7 @@ That is the minimal formal failure pass for an LLD design.
 
 ---
 
-# 13. Interface Formalization
+# 14. Interface Formalization
 
 Interfaces are not just language syntax.
 Formally, they are boundary contracts that expose an admissible observation and command surface while hiding representation and internal dependency choices.
@@ -851,7 +977,7 @@ An interface defines:
 3. what semantic guarantees callers may rely on
 4. what implementation details remain hidden
 
-## 13.1 Interface as boundary projection
+## 14.1 Interface as boundary projection
 
 Let a component have internal model:
 
@@ -879,7 +1005,7 @@ So an interface is a controlled loss of information.
 That is good.
 It reduces coupling by preventing callers from depending on accidental structure.
 
-## 13.2 Interface as a behavioral contract
+## 14.2 Interface as a behavioral contract
 
 A useful interface is not just a method list.
 It is a contract over traces.
@@ -902,7 +1028,7 @@ $$ \mathrm{Contract}(op) = (\mathrm{Pre}, \mathrm{Post}, \mathrm{Fail}, \mathrm{
 
 This is why two interfaces with identical method signatures may still be radically different designs.
 
-## 13.3 Interface refinement
+## 14.3 Interface refinement
 
 Suppose two interfaces `I1` and `I2` represent versions of the same boundary.
 
@@ -916,7 +1042,7 @@ This is the interface-level version of conservative extension.
 
 It matters because good LLD often depends on being able to swap implementations or extend behavior without breaking callers.
 
-## 13.4 Dependency inversion as interface factoring
+## 14.4 Dependency inversion as interface factoring
 
 If component `A` depends on component `B` only through an interface `IB`, then the dependency edge is not really:
 
@@ -938,7 +1064,7 @@ This weakens coupling and localizes change.
 So interface extraction is not mere style.
 It is graph factoring that can reduce propagation of requirement change.
 
-## 13.5 Interface width and leakiness
+## 14.5 Interface width and leakiness
 
 Define the width of an interface roughly as the amount of behavior and structure it exposes.
 
@@ -957,7 +1083,7 @@ So interface design is an optimization problem:
 
 > expose enough to preserve correctness and usability, but not enough to leak representation or unnecessary policy
 
-## 13.6 Interface placement heuristic
+## 14.6 Interface placement heuristic
 
 Introduce an interface when at least one of these is true:
 
@@ -971,7 +1097,7 @@ Do not introduce an interface just because a language allows one.
 An interface with only one implementation can still be useful if it isolates a high-volatility or side-effecting boundary.
 An interface around a perfectly stable, purely internal entity often adds little.
 
-## 13.7 Interfaces and invariants
+## 14.7 Interfaces and invariants
 
 Interfaces should align with invariant ownership.
 
@@ -989,7 +1115,231 @@ So interface granularity should track mutation closure, not just object vocabula
 
 ---
 
-# 14. Classes as a Representation Layer
+# 15. Command Pattern Formalization
+
+The Command pattern is not primarily about "wrapping a method call in an object."
+
+Formally, it is a reification of an event or transition request into a first-class value that can be stored, queued, retried, authorized, logged, or composed before execution.
+
+## 15.1 Command as reified event
+
+In the base model, an external event is an element of `E`.
+
+The Command pattern introduces an explicit representation:
+
+$$ \mathrm{Command} = (type, payload, metadata) $$
+
+with an interpretation map:
+
+$$ \mathrm{decode} : \mathrm{Command} \to E $$
+
+So instead of calling a transition directly, the system can manipulate a command value before applying it.
+
+This matters because it separates:
+
+1. command construction
+2. command transport or storage
+3. command authorization and validation
+4. command execution
+
+## 15.2 Command handler semantics
+
+A command handler is a boundary that interprets a command against system state:
+
+$$ \mathrm{handle} : \mathrm{Command} \times \Sigma \times X \to \Sigma \times X $$
+
+or, when failures are explicit:
+
+$$ \mathrm{handle}_f : \mathrm{Command} \times \Sigma \times X \to \mathrm{Result}[(\Sigma \times X), F] $$
+
+This is the direct bridge between the Command pattern and the transition relation `\delta`.
+
+Often:
+
+$$ \mathrm{handle}(cmd, s, x) = \delta(s, x, \mathrm{decode}(cmd)) $$
+
+possibly after applying guards, authorization, or idempotency checks.
+
+## 15.3 Command as deferred authority
+
+The Command pattern is useful when the right to *describe* an action and the right to *execute* an action should be separated.
+
+Examples:
+
+- UI creates a command
+- queue transports the command
+- worker executes the command
+- audit system records the command
+
+So a command is a portable carrier of intended mutation.
+
+That means the Command pattern is closely tied to:
+
+- ownership boundaries
+- authorization
+- scheduling
+- retries
+- idempotency
+
+## 15.4 Command log and replay
+
+Because commands are values, they can be persisted:
+
+$$ L = [cmd_1, cmd_2, \ldots, cmd_n] $$
+
+and replayed by repeated application:
+
+$$ (s_n, x_n) = \mathrm{foldl}(\mathrm{handle}, (s_0, x_0), L) $$
+
+This is the formal reason Command is useful for:
+
+- audit trails
+- job queues
+- undo or redo variants
+- event sourcing adjacent designs
+
+It turns "requested transitions" into a manipulable history.
+
+## 15.5 Command granularity
+
+A good command boundary usually corresponds to one meaningful business transition.
+
+If a command is too low-level:
+
+- clients must orchestrate many commands to preserve one invariant
+
+If a command is too broad:
+
+- failure handling and authorization become vague
+
+So command granularity should align with mutation closure and invariant scope.
+
+## 15.6 Command pattern and LLD judgment
+
+Use Command when one or more of these are true:
+
+1. actions must be queued, delayed, retried, or logged
+2. execution context is different from request context
+3. permissions or validation should attach to an action value
+4. idempotency or replay is important
+
+Do not use it merely to create extra classes around trivial synchronous method calls.
+
+---
+
+# 16. Observer Pattern Formalization
+
+The Observer pattern is not primarily "one object notifies many others."
+
+Formally, it is a dependency structure for propagating state-derived observations or events from one source to multiple subscribers while keeping the source decoupled from subscriber implementations.
+
+## 16.1 Observer as observation fan-out
+
+Let a source component produce state transitions:
+
+$$ \delta_{src} : \Sigma \times X \times E \to \Sigma \times X $$
+
+The Observer pattern introduces a publication step:
+
+$$ \mathrm{publish} : \mathrm{Observation} \to \mathcal{P}(\mathrm{Subscriber}) $$
+
+and subscriber handlers:
+
+$$ \mathrm{notify}_i : \mathrm{Observation} \to \Omega_i $$
+
+for each subscriber `i`.
+
+So the source no longer depends on concrete consumers, only on the observation boundary.
+
+## 16.2 Observation model
+
+An observer system needs a choice of what is being propagated.
+
+Typical choices:
+
+1. raw state change
+2. domain event
+3. derived summary
+4. invalidation signal
+
+Formally:
+
+$$ \mathrm{obs} : \Sigma \times X \times E \times \Sigma' \times X' \to \mathrm{Observation} $$
+
+This matters because poor Observer designs often leak too much source representation.
+
+Good observation models expose only what subscribers should know.
+
+## 16.3 Dependency graph factoring
+
+Without Observer, a source that calls `n` consumers directly tends toward:
+
+$$ S \to C_1, \; S \to C_2, \; \ldots, \; S \to C_n $$
+
+With Observer, the structure becomes closer to:
+
+$$ S \to \mathrm{ObservationBus} \leftarrow C_1, C_2, \ldots, C_n $$
+
+or:
+
+$$ S \to \mathrm{SubjectInterface} \leftarrow C_1, C_2, \ldots, C_n $$
+
+So Observer is graph factoring for fan-out dependencies.
+
+Its value is reduced coupling, not magic scalability by itself.
+
+## 16.4 Delivery semantics
+
+Observer designs are incomplete unless delivery semantics are stated.
+
+Key questions:
+
+1. synchronous or asynchronous delivery
+2. at-most-once, at-least-once, or best-effort delivery
+3. ordered or unordered notification
+4. failure isolation between subscribers
+
+These choices affect correctness.
+
+For example, synchronous Observer may pull subscriber failures into the source path, while asynchronous Observer may require replay, idempotency, and backlog handling.
+
+## 16.5 Observer and consistency boundary
+
+Observer often creates a split between:
+
+1. core state transition correctness
+2. eventual propagation of derived effects
+
+So a key design question is:
+
+> is subscriber notification inside the atomic success path, or outside it as an emitted side effect?
+
+If notification is outside the core transition, then subscribers should usually be treated as consumers of `\Omega`, not co-owners of the source invariant.
+
+This is where many designs go wrong: they mix invariant enforcement with observation fan-out.
+
+## 16.6 Observer pattern and LLD judgment
+
+Use Observer when one source produces information that multiple consumers need, and those consumers should evolve independently.
+
+Good use cases:
+
+1. UI refresh or cache invalidation
+2. notification fan-out
+3. analytics or audit listeners
+4. plugin-style extensions
+
+Be cautious when:
+
+1. subscriber work is required for source correctness
+2. notification ordering is semantically critical
+3. backpressure or failure isolation is underspecified
+
+In those cases, a queue, workflow orchestrator, or explicit command pipeline may be more honest than a vague Observer abstraction.
+
+---
+
+# 17. Classes as a Representation Layer
 
 Classes are not the first-class object of the formal model.
 
@@ -1008,7 +1358,7 @@ So class design is best understood as:
 
 ---
 
-# 15. Why the Interview Funnel Exists
+# 18. Why the Interview Funnel Exists
 
 The usual interview steps reconstruct this model in a practical order:
 
@@ -1026,7 +1376,7 @@ It is not arbitrary ceremony.
 
 ---
 
-# 16. Minimal Formal Compression
+# 19. Minimal Formal Compression
 
 If you want the shortest possible statement:
 
@@ -1034,7 +1384,7 @@ $$ \mathrm{LLD} = \text{choose state, constrain it with invariants, define legal
 
 ---
 
-# 17. What This Model Does Not Cover Well
+# 20. What This Model Does Not Cover Well
 
 This formalization is strong for bounded local design.
 
