@@ -3,12 +3,12 @@ Low-Level Design (LLD) is fundamentally about **local structure under evolving c
 High-level system design optimizes *distributed resource flow* (latency, throughput, consistency, scaling).
 LLD optimizes *software entropy*:
 
-* extensibility,
-* correctness under mutation,
-* dependency control,
-* state transitions,
-* interface stability,
-* compositional reasoning.
+- extensibility,
+- correctness under mutation,
+- dependency control,
+- state transitions,
+- interface stability,
+- compositional reasoning.
 
 The highest-ROI framing is:
 
@@ -22,11 +22,61 @@ Most interview prep overfocuses on UML trivia and design patterns memorization. 
 4. model ownership/lifecycle/state correctly,
 5. keep mutation localized.
 
+```
+SYSTEM
+│
+├── State
+│   ├── ADTs
+│   ├── Entities
+│   └── Value Objects
+│
+├── Transitions
+│   ├── Methods
+│   ├── Commands
+│   ├── Events
+│   └── Transactions
+│
+├── Correctness
+│   ├── Invariants
+│   ├── Preconditions
+│   ├── Postconditions
+│   ├── Safety
+│   └── Liveness
+│
+├── Ownership
+│   ├── Encapsulation
+│   ├── Information Hiding
+│   ├── Aggregates
+│   └── Responsibilities
+│
+├── Structure
+│   ├── Composition
+│   ├── Interfaces
+│   ├── Dependency Graphs
+│   └── Modules
+│
+├── Performance
+│   ├── Complexity
+│   ├── Indexing
+│   └── Caching
+│
+├── Concurrency
+│   ├── Atomicity
+│   ├── Locks
+│   └── Serializability
+│
+└── Evolution
+    ├── Abstraction
+    ├── Polymorphism
+    └── Extensibility
+```
+
 ---
 
 # 1. The Core Mental Model
 
 Think in layers:
+
 
 | Layer                       | Main Question                       | Failure Mode         |
 | --------------------------- | ----------------------------------- | -------------------- |
@@ -37,6 +87,7 @@ Think in layers:
 | Extensibility               | What changes frequently?            | Rewrite explosions   |
 | Concurrency/resource safety | What can race/fail?                 | Hidden bugs          |
 | Interface contracts         | What is guaranteed?                 | Brittle integrations |
+
 
 ---
 
@@ -56,37 +107,37 @@ This is the foundation.
 
 Examples:
 
-* balance ≥ 0
-* booking cannot overlap
-* cache entry must expire
-* order cannot be both CANCELLED and SHIPPED
+- balance ≥ 0
+- booking cannot overlap
+- cache entry must expire
+- order cannot be both CANCELLED and SHIPPED
 
 Good LLD protects invariants *structurally*.
 
 Weak engineers:
 
-* expose mutable state,
-* rely on caller discipline.
+- expose mutable state,
+- rely on caller discipline.
 
 Strong engineers:
 
-* make illegal states unrepresentable.
+- make illegal states unrepresentable.
 
 ### Learn:
 
-* encapsulation,
-* immutability,
-* value objects,
-* aggregate boundaries,
-* ownership.
+- encapsulation,
+- immutability,
+- value objects,
+- aggregate boundaries,
+- ownership.
 
 ### Exercise
 
 Implement:
 
-* banking ledger,
-* parking lot,
-* reservation system.
+- banking ledger,
+- parking lot,
+- reservation system.
 
 Focus only on invariant safety.
 
@@ -122,17 +173,17 @@ StripeProcessor implements PaymentProcessor
 
 This controls:
 
-* testability,
-* extensibility,
-* replacement cost,
-* blast radius.
+- testability,
+- extensibility,
+- replacement cost,
+- blast radius.
 
 ### Learn deeply
 
-* Dependency inversion,
-* interfaces,
-* ports/adapters,
-* composition over inheritance.
+- Dependency inversion,
+- interfaces,
+- ports/adapters,
+- composition over inheritance.
 
 ---
 
@@ -142,13 +193,13 @@ Almost all backend systems are secretly state transition systems.
 
 Examples:
 
-* orders,
-* workflows,
-* schedulers,
-* retries,
-* jobs,
-* distributed transactions,
-* AI agent orchestration.
+- orders,
+- workflows,
+- schedulers,
+- retries,
+- jobs,
+- distributed transactions,
+- AI agent orchestration.
 
 ### Weak LLD
 
@@ -173,17 +224,17 @@ PENDING -> PAID -> SHIPPED
 
 ### Learn:
 
-* finite state machines,
-* transition validation,
-* event-driven transitions,
-* workflow modeling.
+- finite state machines,
+- transition validation,
+- event-driven transitions,
+- workflow modeling.
 
 This has massive transfer to:
 
-* Temporal,
-* Ray DAGs,
-* orchestration systems,
-* distributed systems.
+- Temporal,
+- Ray DAGs,
+- orchestration systems,
+- distributed systems.
 
 ---
 
@@ -217,9 +268,9 @@ RetryDecorator(
 
 ### Learn:
 
-* strategy pattern,
-* decorator,
-* policy injection.
+- strategy pattern,
+- decorator,
+- policy injection.
 
 ---
 
@@ -231,18 +282,18 @@ LLD is largely:
 
 ### Learn:
 
-* interface segregation,
-* stable APIs,
-* preconditions/postconditions,
-* idempotency,
-* versioning,
-* error semantics.
+- interface segregation,
+- stable APIs,
+- preconditions/postconditions,
+- idempotency,
+- versioning,
+- error semantics.
 
 This becomes critical in:
 
-* microservices,
-* SDK design,
-* AI tool systems.
+- microservices,
+- SDK design,
+- AI tool systems.
 
 ---
 
@@ -254,21 +305,21 @@ Many systems fail because engineers model only *objects*, not *evolution*.
 
 You should think:
 
-* lifecycle,
-* expiration,
-* retries,
-* leases,
-* eventual consistency,
-* ordering,
-* concurrency windows.
+- lifecycle,
+- expiration,
+- retries,
+- leases,
+- eventual consistency,
+- ordering,
+- concurrency windows.
 
 ### Learn:
 
-* queues,
-* retries,
-* schedulers,
-* clocks/timestamps,
-* event sourcing basics.
+- queues,
+- retries,
+- schedulers,
+- clocks/timestamps,
+- event sourcing basics.
 
 ---
 
@@ -280,16 +331,16 @@ Great LLD engineers think:
 
 Example:
 
-* LFU cache → hashmap + doubly linked list,
-* scheduler → priority queue,
-* autocomplete → trie,
-* matching engine → ordered maps/heaps.
+- LFU cache → hashmap + doubly linked list,
+- scheduler → priority queue,
+- autocomplete → trie,
+- matching engine → ordered maps/heaps.
 
 LLD interviews heavily reward:
 
-* choosing the correct backing structure,
-* understanding mutation cost,
-* maintaining invariants efficiently.
+- choosing the correct backing structure,
+- understanding mutation cost,
+- maintaining invariants efficiently.
 
 ---
 
@@ -299,21 +350,21 @@ LLD interviews heavily reward:
 
 Top candidates naturally identify:
 
-* what changes often,
-* what remains invariant,
-* where combinatorial explosion appears,
-* where coupling grows.
+- what changes often,
+- what remains invariant,
+- where combinatorial explosion appears,
+- where coupling grows.
 
 This is essentially:
 
-* abstraction boundary detection,
-* dimensionality reduction for software complexity.
+- abstraction boundary detection,
+- dimensionality reduction for software complexity.
 
 The strongest LLD engineers think almost like:
 
-* graph theorists,
-* category theorists,
-* systems modelers.
+- graph theorists,
+- category theorists,
+- systems modelers.
 
 You already lean this direction from your poset/order-theory thinking.
 
@@ -340,17 +391,17 @@ Master:
 
 ### Exercises
 
-* parking lot,
-* elevator,
-* ATM,
-* vending machine,
-* chess.
+- parking lot,
+- elevator,
+- ATM,
+- vending machine,
+- chess.
 
 Focus:
 
-* state correctness,
-* extensibility,
-* clean dependencies.
+- state correctness,
+- extensibility,
+- clean dependencies.
 
 ---
 
@@ -367,11 +418,11 @@ Master:
 
 ### Exercises
 
-* rate limiter,
-* autocomplete,
-* scheduler,
-* cache,
-* matching engine.
+- rate limiter,
+- autocomplete,
+- scheduler,
+- cache,
+- matching engine.
 
 This phase bridges DSA ↔ real systems.
 
@@ -394,10 +445,10 @@ Master:
 
 ### Exercises
 
-* web crawler,
-* task executor,
-* thread pool,
-* async job system.
+- web crawler,
+- task executor,
+- thread pool,
+- async job system.
 
 This connects directly to your earlier crawler questions.
 
@@ -417,16 +468,17 @@ Master:
 
 ### Exercises
 
-* ride sharing backend,
-* workflow engine,
-* mini Temporal/Ray,
-* distributed task scheduler.
+- ride sharing backend,
+- workflow engine,
+- mini Temporal/Ray,
+- distributed task scheduler.
 
 ---
 
 # 5. Highest ROI Interview Problems
 
 These recur constantly because they expose modeling skill.
+
 
 | Problem            | Concepts                |
 | ------------------ | ----------------------- |
@@ -444,6 +496,7 @@ These recur constantly because they expose modeling skill.
 | Linux find         | composite pattern       |
 | Restaurant booking | intervals + invariants  |
 
+
 ---
 
 # 6. What Actually Differentiates Strong Candidates
@@ -451,6 +504,7 @@ These recur constantly because they expose modeling skill.
 Not pattern memorization.
 
 The differentiator is whether you naturally think in:
+
 
 | Strong Signal        | Meaning                 |
 | -------------------- | ----------------------- |
@@ -461,6 +515,7 @@ The differentiator is whether you naturally think in:
 | Extensibility axes   | future-proofing         |
 | Resource lifecycle   | systems maturity        |
 | Failure semantics    | production realism      |
+
 
 ---
 
@@ -490,25 +545,25 @@ Instead:
 
 ### Beginner → Intermediate
 
-* Head First Design Patterns
-  Good intuition builder.
+- Head First Design Patterns
+Good intuition builder.
 
 ### Core LLD interviews
 
-* Grokking the Object Oriented Design Interview
+- Grokking the Object Oriented Design Interview
 
 ### Serious engineering thinking
 
-* Designing Data-Intensive Applications
-  Bridges LLD ↔ distributed systems.
+- Designing Data-Intensive Applications
+Bridges LLD ↔ distributed systems.
 
 ### Architecture/dependency thinking
 
-* Clean Architecture
+- Clean Architecture
 
 ### Advanced modeling
 
-* Domain-Driven Design
+- Domain-Driven Design
 
 ---
 
@@ -516,19 +571,19 @@ Instead:
 
 Based on your questions:
 
-* strong abstraction instinct,
-* strong relational/poset reasoning,
-* strong systems curiosity,
-* mathematically structured thinking.
+- strong abstraction instinct,
+- strong relational/poset reasoning,
+- strong systems curiosity,
+- mathematically structured thinking.
 
 Your likely weakness is not conceptual sophistication.
 
 It is probably:
 
-* operational simplification,
-* choosing pragmatic boundaries quickly,
-* production-oriented tradeoffs,
-* disciplined interface shaping.
+- operational simplification,
+- choosing pragmatic boundaries quickly,
+- production-oriented tradeoffs,
+- disciplined interface shaping.
 
 Meaning:
 you likely over-optimize abstraction depth before stabilizing concrete invariants.

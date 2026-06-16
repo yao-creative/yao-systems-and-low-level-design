@@ -22,7 +22,9 @@ In other words:
 
 Let a system be:
 
-$$ S = (E, \Sigma, X, I, \delta, \Phi, \Omega, D) $$
+$$
+ S = (E, \Sigma, X, I, \delta, \Phi, \Omega, D) 
+$$
 
 Where:
 
