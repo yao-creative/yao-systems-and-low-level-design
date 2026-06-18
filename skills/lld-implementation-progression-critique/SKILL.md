@@ -36,6 +36,7 @@ Use `problems/low-level-design/lld-formalization.md` only when the user wants de
 8. Always include a gap matrix, a skills-gained matrix, a reinforcement matrix, a progression critique, and an intuition check matrix.
 9. When notebook cells, markdown notes, or comments show multiple revisions, compare the newest attempt against the most recent prior meaningful revision rather than against the very first attempt only.
 10. If the user asks to update an `.ipynb` or notes file, append a concise critique block rather than rewriting prior cells unless explicitly asked.
+11. When the user asks to update an `.ipynb` or notes file and there is enough final-attempt context, append an annotated exemplar code answer based on the user's latest attempt, with editorial notes explaining the key upgrades and why they matter, followed by a short markdown block pointing to the key changes.
 
 ## Critique Priorities
 
@@ -60,6 +61,8 @@ If the same gap appears in more than one revision, call that out explicitly as r
 - Distinguish copied-in advice from demonstrated retained skill.
 - Call out when a later note proves the user learned something even if the final code still lags behind.
 - Call out when code improves accidentally without a stable supporting model.
+- When enough code context exists, include one annotated exemplar implementation answer that is clearly better than the user's latest attempt but still aligned to that attempt's chosen scope and representation.
+- In that exemplar, annotate the important upgrades directly in code or immediately adjacent notes, include short editorial notes explaining why each upgrade matters, and add a short markdown change-summary block that points to the key changes.
 - Prefer concrete references to cells, sections, or revision markers when possible.
 - Do not provide a full polished solution unless the user explicitly asks for one.
 - Do not over-index on design-pattern names.
@@ -77,7 +80,8 @@ Default format:
 ## 5. Challenge Questions
 ## 6. Progression Critique
 ## 7. Intuition Check Matrix
-## 8. Optional Deeper Model
+## 8. Annotated Exemplar
+## 9. Optional Deeper Model
 
 Rules:
 
@@ -219,6 +223,19 @@ Allowed concepts:
 - invariant preservation
 - mutation authority
 - learning transfer across variants
+
+## 8. Annotated Exemplar
+
+When enough code context exists, always include an annotated exemplar implementation answer based on the user's latest meaningful attempt.
+
+Requirements:
+
+- Keep the exemplar aligned to the user's chosen scope and representation instead of switching to a different problem version.
+- Make the exemplar clearly better than the current attempt on ownership, contracts, lifecycle handling, and traceability.
+- Add short inline annotations or immediately adjacent editorial notes explaining the important upgrades.
+- Call out why each major augmentation matters, preferably with lightweight importance labels.
+- Follow the exemplar with a short markdown block that points to the key changes and explains why each one matters.
+- Do not replace the user's artifact unless explicitly asked; append the exemplar as a separate block or cell.
 
 ## Distinction From `lld-critique`
 
