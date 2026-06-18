@@ -1,0 +1,4 @@
+interface:
+  display_name: "LLD Critique"
+  short_description: "Scored matrix critique for low-level design attempts"
+  default_prompt: "Use $lld-critique to review my low-level design attempt against my drill format with findings first, a 1-10 gap matrix, a 1-10 intuition check matrix, and a prioritized revision matrix."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "LLD Progression Critique"
+  short_description: "Scored critique of LLD implementation progression"
+  default_prompt: "Use $lld-implementation-progression-critique to review my LLD notebook progression, the skills I gained, my recurring gaps, and what I should strengthen next."
