@@ -228,7 +228,7 @@ Learn the process.
 
 Examples:
 
-* Parking Lot
+* Parking Lot DONE
 * Vending Machine
 * ATM
 * Library
