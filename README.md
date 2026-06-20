@@ -1,5 +1,14 @@
 # System and Low-Level Design Practice
 
+## Motivation:
+
+I've learnt LLD design before, however, never really practiced it in a structured way. I realized that my productivity and my usage of them is plateau-ing. Take the analogy of a directed/ dependency graph, if one doesn't regularly revise the fundamentals, there are missing dependencies that some further nodes are unreachable and time is spent wandering around the primatives. 
+
+In this attempt, I want to understand with light applied category theory of design and formalize the state machines and other abstraction concepts within.
+
+
+## Organization
+
 Use folders plus Markdown as the default format.
 
 Why:
