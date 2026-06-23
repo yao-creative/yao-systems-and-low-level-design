@@ -42,9 +42,9 @@ MAX_FLOOR = 100
 
 The invariant:
 
-[
+$$
 1 \leq \text{currentFloor} \leq 100
-]
+$$
 
 is true **regardless of whether the elevator is Idle, Moving, or Maintenance**.
 
