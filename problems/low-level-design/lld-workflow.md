@@ -12,9 +12,9 @@ Requirements
     ↓
 Core Entities
     ↓
-Attributes / Methods
-    ↓
 Relationships
+    ↓
+API / Interfaces
     ↓
 State Machine
     ↓
@@ -43,6 +43,8 @@ Use this order in a live interview.
 
 Ask for:
 
+- high-level design constraints
+- functional requirements
 - core capabilities
 - assumptions
 - scope boundaries
@@ -51,6 +53,7 @@ Ask for:
 Output:
 
 - a short agreed spec
+- functional scope and constraints from the HLD view
 
 ## 2. Identify core entities
 
@@ -64,19 +67,7 @@ Output:
 - major entities only
 - one-sentence reason each
 
-## 3. Design attributes and methods
-
-Ask:
-
-- what fields does each entity own?
-- what method surface is needed?
-
-Output:
-
-- fields with types or shape
-- method signatures or responsibilities
-
-## 4. Model relationships
+## 3. Model relationships
 
 Ask:
 
@@ -86,6 +77,21 @@ Ask:
 Output:
 
 - relationship map or class diagram notes
+
+## 4. Define APIs and interfaces
+
+Ask:
+
+- what APIs does this design expose?
+- where do we need an interface instead of a concrete class?
+- what is the request / response contract?
+- what are the preconditions and postconditions?
+
+Output:
+
+- API surface
+- interface boundaries
+- contract notes
 
 ## 5. Draw the state machine
 

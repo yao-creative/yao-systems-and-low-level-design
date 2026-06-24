@@ -40,6 +40,8 @@ Write the prompt in one sentence.
 
 Fill in:
 
+- high-level design constraints
+- functional requirements
 - core capabilities
 - assumptions
 - out of scope
@@ -66,31 +68,32 @@ Rule:
 
 For each entity, write:
 
-- fields with types
-- method signatures or responsibilities
+- relationships between entities
+- ownership direction
+- composition / aggregation / association / dependency
 
 Rule:
 
-- do not jump to implementation before the entity surface is stable
+- do not jump to APIs before the relationship graph is stable
 
-## 4. Relationships
+## 4. API and Interfaces
 
-Write how entities relate:
+Write:
 
-- composition
-- aggregation
-- association
-- dependency
+- APIs exposed by the design
+- interface boundaries
+- request / response shape
+- contract preconditions and postconditions
 
 Template:
 
 ```text
-EntityA -> EntityB -> relationship type
+API / Interface -> purpose -> contract
 ```
 
 Rule:
 
-- if the relationship is vague, rewrite it until ownership direction is clear
+- if the API boundary is vague, rewrite it until caller/callee responsibility is clear
 
 ## 5. State Machine
 

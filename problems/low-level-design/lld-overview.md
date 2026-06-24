@@ -18,10 +18,11 @@ Most interview prep overfocuses on UML trivia and design patterns memorization. 
 
 1. identify axes of change,
 2. identify core entities and their state,
-3. model relationships and legal transitions correctly,
-4. assign mutation ownership cleanly,
-5. validate happy and failure traces,
-6. reason about concurrency boundaries.
+3. model relationships and ownership cleanly,
+4. define APIs and interface boundaries,
+5. assign mutation ownership cleanly,
+6. validate happy and failure traces,
+7. reason about concurrency boundaries.
 
 ```
 SYSTEM
@@ -83,11 +84,11 @@ Think in layers:
 | --------------------------- | ----------------------------------- | -------------------- |
 | Domain modeling             | What are the entities + state?      | Wrong abstraction    |
 | Relationship modeling       | Who depends on whom?                | Broken ownership     |
+| API / interface design      | What is exposed and guaranteed?     | Brittle integrations |
 | State modeling              | What transitions are legal?         | Invalid transitions  |
 | Responsibility allocation   | Who owns what behavior?             | God objects          |
 | Trace validation            | How does it behave under motion?     | Missing paths        |
 | Concurrency/resource safety | What can race/fail?                 | Hidden bugs          |
-| Interface contracts         | What is guaranteed?                 | Brittle integrations |
 
 
 ---
