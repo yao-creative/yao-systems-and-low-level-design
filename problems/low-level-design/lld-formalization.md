@@ -253,6 +253,17 @@ In practical terms:
 
 > state should live near invariant enforcement, and mutation authority should be narrow
 
+## 5.1 Responsibility Table
+
+For interview use, compress ownership as:
+
+| Rule / Transition | Owner | Mutator | Enforcement point |
+| --- | --- | --- | --- |
+| lifecycle change | entity / aggregate | method or command handler | guard / invariant check |
+| shared state update | owner component | narrow writer | precondition / lock / transaction |
+
+This is the bridge from state machine to implementation boundaries.
+
 ---
 
 # 6. Dependency Graph Constraints
@@ -285,9 +296,9 @@ Cross-entity workflows should have an identifiable coordination point.
 
 ---
 
-# 7. Extensibility Formalization
+## 7. Extensibility Formalization
 
-Extensibility is not "the code can be edited later."
+Extensibility is not a drill step here, but it remains a useful analysis lens when patterns or interfaces are introduced.
 
 Formally, extensibility is about whether a new requirement can be absorbed by adding or substituting a bounded part of the model without forcing broad modification of already-correct structure.
 
@@ -296,127 +307,6 @@ Let a requirement change be:
 $$ r : (E, \Sigma, X, I, \delta, \Phi, \Omega, D) \to (E', \Sigma', X', I', \delta', \Phi', \Omega', D') $$
 
 A design is more extensible when `r` has low propagation cost.
-
-## 7.1 Change propagation surface
-
-Define:
-
-$$ P(r) = \{ c \mid c \text{ is an existing component or function changed by } r \} $$
-
-Then a practical extensibility objective is:
-
-$$ minimize |P(r)| $$
-
-for common foreseeable changes.
-
-Examples:
-
-- new vehicle type
-- new pricing rule
-- new allocation policy
-- new notification mechanism
-
-## 7.2 Stable core vs variable policy
-
-Some parts of the model should remain structurally stable:
-
-- core state transitions
-- core invariants
-- aggregate ownership boundaries
-
-Other parts are natural variation points:
-
-- pricing policy
-- selection policy
-- formatting or notification policy
-
-A good LLD isolates likely change axes so that:
-
-$$ \delta_{\mathrm{core}} \text{ stays stable while } \Phi_{\mathrm{var}}, \text{ policy modules, or bounded subgraphs of } D \text{ vary} $$
-
-In practice:
-
-> good extensibility means new variants change a narrow policy boundary, not the whole transition graph
-
-## 7.3 Extensibility as graph-local change
-
-In dependency terms, a design is extensible when new behavior can be introduced by:
-
-- adding a node
-- swapping a node behind a stable edge
-- extending local state without violating global invariants
-
-and does not require rewiring large portions of `D`.
-
-Weak extensibility usually looks like:
-
-- enum growth plus `if/else` edits scattered everywhere
-- invariant checks duplicated across many nodes
-- workflow changes coupled directly to representation details
-
-Strong extensibility usually looks like:
-
-- one stable orchestration boundary
-- one explicit variation boundary
-- preserved invariants under substitution
-
-## 7.4 Structure-preserving change
-
-The deeper formal question is:
-
-> when does a system change preserve the design shape rather than forcing redesign?
-
-Let:
-
-$$ S = (E, \Sigma, X, I, \delta, \Phi, \Omega, D), \quad S' = (E', \Sigma', X', I', \delta', \Phi', \Omega', D') $$
-
-A requirement change is *shape-preserving* when there exist embeddings:
-
-$$ f_E : E \to E', \quad f_{\Sigma} : \Sigma \to \Sigma', \quad f_X : X \to X', \quad f_D : D \to D' $$
-
-such that the old model still commutes inside the new one:
-
-$$ f_{\Sigma}(\delta(s,x,e)) = \delta'(f_{\Sigma}(s), f_X(x), f_E(e)) $$
-
-for all previously legal `e` in the unchanged portion of the system.
-
-This is the useful LLD notion of "I added capability without breaking the old conceptual machine."
-
-In plain terms:
-
-- old legal workflows still mean the same thing
-- old invariants remain valid or lift naturally
-- the previous dependency shape embeds into the new one
-
-That is close to an isomorphism idea, but usually not full isomorphism.
-It is more often a **homomorphic extension** or **conservative extension**:
-
-- old behavior is preserved
-- new behavior is added
-- the original model remains intelligible inside the larger one
-
-## 7.5 Partial order of design changes
-
-Requirement changes are not all equally invasive.
-
-Define a preorder over changes:
-
-$$ r_1 \le r_2 \iff \text{every component changed by } r_1 \text{ is also changed by } r_2 $$
-
-or more abstractly:
-
-$$ r_1 \le r_2 \iff P(r_1) \subseteq P(r_2) $$
-
-This induces a rough ordering of extensibility cost.
-
-Examples:
-
-- adding one pricing strategy is typically `<` rewriting the parking workflow
-- adding one spot subtype is typically `<` changing aggregate ownership
-
-So extensibility can be thought of as biasing the system toward a lower-order set of expected requirement changes.
-
-## 7.6 Type-level view of extensibility
 
 Another formalization is through sum and product structure.
 

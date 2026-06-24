@@ -15,17 +15,18 @@ Time target:
 
 # 1. Drill Output Checklist
 
-For each problem, produce all 9 artifacts:
+For each problem, produce all 10 artifacts:
 
 1. Requirements
-2. Invariants
-3. State machine
-4. Core entities
-5. Responsibilities and ownership
-6. Interfaces
-7. Data structures and concurrency notes
-8. One happy path and one failure path
-9. One requirement change and impact analysis
+2. Core entities
+3. Attributes and methods
+4. Relationships
+5. State machine
+6. Responsibilities and ownership
+7. Happy path and failure path
+8. Apply design patterns
+9. Concurrency notes
+10. Extensibility
 
 ---
 
@@ -48,41 +49,7 @@ Limit:
 
 - 4 to 7 bullets total
 
-## 2. Invariants
-
-Write 3 to 5 always-true statements.
-
-Examples:
-
-- only one active trip per driver
-- a booked seat cannot be sold twice
-- an order in `DELIVERED` cannot return to `PAID`
-
-Rule:
-
-- if an invariant is vague, rewrite it until you can point to the owner that enforces it
-
-## 3. State Machine
-
-Write:
-
-- states
-- legal transitions
-- illegal transitions
-
-Template:
-
-```text
-STATE_A -> STATE_B
-STATE_B -> STATE_C
-STATE_B -> FAILED
-```
-
-Rule:
-
-- if the problem has lifecycle, draw this before class design
-
-## 4. Core Entities
+## 2. Core Entities
 
 List only major state carriers.
 
@@ -95,13 +62,55 @@ Rule:
 
 - attached data is a field, not an entity
 
-## 5. Responsibilities and Ownership
+## 3. Attributes and Methods
+
+For each entity, write:
+
+- fields with types
+- method signatures or responsibilities
+
+Rule:
+
+- do not jump to implementation before the entity surface is stable
+
+## 4. Relationships
+
+Write how entities relate:
+
+- composition
+- aggregation
+- association
+- dependency
+
+Template:
+
+```text
+EntityA -> EntityB -> relationship type
+```
+
+Rule:
+
+- if the relationship is vague, rewrite it until ownership direction is clear
+
+## 5. State Machine
+
+Write:
+
+- states
+- legal transitions
+- illegal transitions
+
+Rule:
+
+- if the problem has lifecycle, draw this before class design
+
+## 6. Responsibilities and Ownership
 
 For each important rule or transition, answer:
 
 - which object owns the state?
 - which object performs the mutation?
-- which object enforces the invariant?
+- which object enforces the rule?
 
 Template:
 
@@ -109,31 +118,35 @@ Template:
 Rule / Transition -> Owner -> Mutator -> Enforcement point
 ```
 
-This is the most important section.
+This is the highest-value structural step.
 
-## 6. Interfaces
+## 7. Happy Path and Failure Path
 
-Only add interfaces where variation is real.
+Trace one:
 
-For each interface, write:
+- happy path
+- failure path
+
+Rule:
+
+- if the trace exposes missing ownership or a missing transition, go back to section 5
+
+## 8. Apply Design Patterns
+
+Only add patterns where variation is real.
+
+For each pattern, write:
 
 - what varies
 - why a contract is needed
 
-Template:
-
-```text
-PricingStrategy -> pricing rules vary
-AllocationStrategy -> assignment policy varies
-```
-
-## 7. Data Structures and Concurrency
+## 9. Concurrency Notes
 
 Write:
 
 - dominant operations
 - DS choice
-- atomicity or race concerns
+- shared-state or interleaving risks
 
 Template:
 
@@ -145,38 +158,18 @@ Operation -> DS -> Why
 Shared state -> race risk -> control point
 ```
 
-## 8. Trace Two Flows
+## 10. Extensibility
 
-Write one:
+Write:
 
-- happy path
-- failure path
-
-Template:
-
-```text
-request -> validate -> transition -> side effect -> new state
-```
+- one realistic change axis
+- what stays stable
+- what changes
+- where the change lands
 
 Rule:
 
-- if the trace exposes missing ownership, go back to section 5
-
-## 9. Requirement Change
-
-Add one realistic change:
-
-- new pricing rule
-- new role
-- retry support
-- cancellation window
-- concurrency increase
-
-Then answer:
-
-- what stays stable?
-- what changes?
-- where does the change land?
+- if the change forces broad rewiring, the earlier decomposition is too loose
 
 ---
 

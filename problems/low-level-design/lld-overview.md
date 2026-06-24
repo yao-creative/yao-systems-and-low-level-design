@@ -17,10 +17,11 @@ The highest-ROI framing is:
 Most interview prep overfocuses on UML trivia and design patterns memorization. The real signal is whether you can:
 
 1. identify axes of change,
-2. isolate invariants,
-3. control dependency direction,
-4. model ownership/lifecycle/state correctly,
-5. keep mutation localized.
+2. identify core entities and their state,
+3. model relationships and legal transitions correctly,
+4. assign mutation ownership cleanly,
+5. validate happy and failure traces,
+6. reason about concurrency boundaries.
 
 ```
 SYSTEM
@@ -80,11 +81,11 @@ Think in layers:
 
 | Layer                       | Main Question                       | Failure Mode         |
 | --------------------------- | ----------------------------------- | -------------------- |
-| Domain modeling             | What are the entities + invariants? | Wrong abstraction    |
-| State modeling              | What transitions are legal?         | Invalid states       |
+| Domain modeling             | What are the entities + state?      | Wrong abstraction    |
+| Relationship modeling       | Who depends on whom?                | Broken ownership     |
+| State modeling              | What transitions are legal?         | Invalid transitions  |
 | Responsibility allocation   | Who owns what behavior?             | God objects          |
-| Dependency structure        | Who depends on whom?                | Tight coupling       |
-| Extensibility               | What changes frequently?            | Rewrite explosions   |
+| Trace validation            | How does it behave under motion?     | Missing paths        |
 | Concurrency/resource safety | What can race/fail?                 | Hidden bugs          |
 | Interface contracts         | What is guaranteed?                 | Brittle integrations |
 

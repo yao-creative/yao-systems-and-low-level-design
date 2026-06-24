@@ -10,23 +10,23 @@ The conceptual explanation for why this sequence works lives in `lld-why.md`.
 ```text
 Requirements
     ↓
-Invariants
+Core Entities
+    ↓
+Attributes / Methods
+    ↓
+Relationships
     ↓
 State Machine
     ↓
-Entities
+Responsibilities / Ownership
     ↓
-Responsibilities
+Happy Path + Failure Path
     ↓
-Interfaces
+Patterns
     ↓
-Data Structures
-    ↓
-Concurrency / Failure
+Concurrency Notes
     ↓
 Extensibility
-    ↓
-Trace One Happy Path + One Failure Path
 ```
 
 ```
@@ -52,30 +52,48 @@ Output:
 
 - a short agreed spec
 
-## 2. Define invariants
+## 2. Identify core entities
 
 Ask:
 
-- what must never be violated?
-- what states are illegal?
-
-Examples:
-
-- one active ticket per vehicle
-- no double booking
-- completed order cannot be cancelled
+- what are the major state carriers?
+- what should remain a field instead of becoming its own entity?
 
 Output:
 
-- 3 to 5 always-true statements
+- major entities only
+- one-sentence reason each
 
-## 3. Draw the state machine
+## 3. Design attributes and methods
 
 Ask:
 
-- what changes over time?
+- what fields does each entity own?
+- what method surface is needed?
+
+Output:
+
+- fields with types or shape
+- method signatures or responsibilities
+
+## 4. Model relationships
+
+Ask:
+
+- how do entities relate?
+- where is composition, aggregation, association, or dependency?
+
+Output:
+
+- relationship map or class diagram notes
+
+## 5. Draw the state machine
+
+Ask:
+
+- what states exist?
 - what transitions are legal?
-- what transitions must be rejected?
+- what transitions are illegal?
 
 Output:
 
@@ -83,20 +101,7 @@ Output:
 - allowed transitions
 - terminal or failure states if relevant
 
-## 4. Identify core entities
-
-Only list major entities.
-
-Filter:
-
-- if it owns changing state or enforces rules, it may be an entity
-- if it is just attached data, make it a field
-
-Output:
-
-- major state carriers only
-
-## 5. Assign responsibilities and ownership
+## 6. Assign responsibilities and ownership
 
 Ask:
 
@@ -104,58 +109,50 @@ Ask:
 - who is allowed to perform each transition?
 - where should each rule live?
 
-This is the highest-value structural step.
-
 Output:
 
 - responsibility split
 - mutation ownership
-- orchestration boundary
+- enforcement point
 
-## 6. Define interfaces only where variation exists
+## 7. Trace happy path and failure path
+
+Ask:
+
+- how does the main use case run?
+- how does one failure path break safely?
+
+Output:
+
+- end-to-end trace of one success path
+- end-to-end trace of one failure path
+
+## 8. Apply design patterns
 
 Ask:
 
 - what is likely to vary?
 - do I need a contract here, or just a concrete class?
 
-Typical variation points:
-
-- pricing
-- allocation strategy
-- notification channel
-- payment provider
-
 Output:
 
 - minimal abstractions
+- patterns only where justified by variation
 
-## 7. Choose data structures
+## 9. Concurrency notes
 
 Ask:
 
 - what operations dominate?
-- what lookup, ordering, or eviction behavior matters?
+- what shared state can race?
+- what must be atomic?
 
 Output:
 
 - DS choices justified by operations
+- race risks and control points
 
-## 8. Add concurrency and failure handling
-
-Ask:
-
-- what races are possible?
-- what must be atomic?
-- what invalid interleavings break invariants?
-
-Output:
-
-- concurrency boundaries
-- locking or serialization points if needed
-- failure assumptions
-
-## 9. Discuss extensibility
+## 10. Discuss extensibility
 
 Ask:
 
@@ -166,15 +163,6 @@ Output:
 
 - one or two concrete future changes
 - explanation of why the current structure absorbs them
-
-## 10. Trace flows
-
-Always walk:
-
-- one happy path
-- one failure path
-
-This validates the design under motion instead of only in snapshot form.
 
 ---
 

@@ -67,7 +67,7 @@ Relationships tell you:
 
 This matters because software complexity is often **graph complexity**, not code volume.
 
-## Behavior -> defines the transition function
+## Behavior / flows -> defines the transition function
 
 Behavior specifies how state evolves:
 
