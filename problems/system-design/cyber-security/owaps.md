@@ -151,10 +151,7 @@ is functionally wrong for password storage because the attacker can efficiently 
 A proper password storage function is more like:
 
 $$
-\operatorname{store}(p)
-=======================
-
-\operatorname{KDF}(p,\text{salt},\text{cost})
+\operatorname{store}(p) := \operatorname{KDF}(p,\text{salt},\text{cost})
 $$
 
 where the computation is intentionally expensive.
@@ -347,9 +344,8 @@ For example:
 
 $$
 C_{\text{production}}
-=====================
-
-{\text{TLS on},\text{debug off},\text{least privilege},\ldots}
+:=
+\{\text{TLS on},\text{debug off},\text{least privilege},\ldots\}
 $$
 
 but the actual deployment uses:
@@ -429,10 +425,7 @@ $$
 The desired property is:
 
 $$
-\operatorname{authenticate}(c)
-==============================
-
-u
+\operatorname{authenticate}(c) = u
 \iff
 c \text{ proves identity of } u
 $$
@@ -462,10 +455,7 @@ credential stuffing not mitigated
 The fundamental problem is:
 
 $$
-\operatorname{authenticate}(x)
-==============================
-
-u
+\operatorname{authenticate}(x) = u
 $$
 
 when $x$ should not be sufficient evidence that the actor is $u$.
